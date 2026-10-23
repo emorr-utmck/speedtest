@@ -22,6 +22,7 @@ if is_alpine; then
   sed -i "s#\"/var/www/localhost/htdocs\"#\"/var/www/html\"#g" /etc/apache2/httpd.conf
 else
   echo "DEBIAN IMAGE"
+  a2enmod ssl
 fi
 
 
@@ -75,7 +76,7 @@ if [[ "$TELEMETRY" == "true" && ("$MODE" == "frontend" || "$MODE" == "standalone
 
   # Override SQLite database path for Docker environment
   # In Docker, we use /database/db.sql which is outside the web-accessible directory
-  sed -i s/\$Sqlite_db_file\ =\ \'.*\'/\$Sqlite_db_file=\'\\\/database\\\/db.sql\'/g /var/www/html/results/telemetry_settings.php
+  sed -i s/\$Sqlite_db_file\ =\ .*/\$Sqlite_db_file=\'\\\/database\\\/db.sql\'\;/g /var/www/html/results/telemetry_settings.php
   sed -i s/\$stats_password\ =\ \'.*\'/\$stats_password\ =\ \'$PASSWORD\'/g /var/www/html/results/telemetry_settings.php
 
   if [ "$ENABLE_ID_OBFUSCATION" == "true" ]; then
